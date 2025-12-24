@@ -1,0 +1,7 @@
+{
+  "name": "recipe-finder",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
