@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { RecipeSummary } from '../models/recipe.model';
+import { RecipeSummary, RecipeDetails } from '../models/recipe.model';
 
 type ComplexSearchResponse = {
   results: RecipeSummary[];
@@ -17,7 +17,6 @@ type ComplexSearchResponse = {
 export class RecipeService {
   private readonly baseUrl = environment.spoonacular.baseUrl;
   private readonly apiKey = environment.spoonacular.apiKey;
-
   constructor(private http: HttpClient) {}
 
   /**
@@ -36,4 +35,16 @@ export class RecipeService {
       map((res) => res.results ?? [])
     );
   }
+  
+  getRecipeDetails(id: number): Observable<RecipeDetails> {
+  const url = `${this.baseUrl}/recipes/${id}/information`;
+
+  const params = new HttpParams()
+    .set('apiKey', this.apiKey)
+    .set('includeNutrition', 'false');
+
+  return this.http.get<RecipeDetails>(url, { params });
+}
+
+
 }
