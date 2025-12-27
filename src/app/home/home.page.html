@@ -1,20 +1,54 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title>Recipe Finder</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <!-- Search input -->
+  <ion-item>
+    <ion-input
+      label="Ingredients"
+      labelPlacement="stacked"
+      placeholder="e.g. chicken,tomato"
+      [(ngModel)]="query"
+    ></ion-input>
+  </ion-item>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <ion-button expand="block" (click)="onSearch()">Search</ion-button>
+
+  <!-- Quick nav -->
+  <ion-button routerLink="/favourites" expand="block" fill="outline">
+    Favourites
+  </ion-button>
+  <ion-button routerLink="/settings" expand="block" fill="outline">
+    Settings
+  </ion-button>
+
+  <!-- Loading -->
+  <div *ngIf="loading" style="margin-top: 16px; display: flex; gap: 12px; align-items: center;">
+    <ion-spinner></ion-spinner>
+    <ion-label>Searching…</ion-label>
   </div>
+
+  <!-- Error / empty -->
+  <ion-label *ngIf="!loading && errorMsg" style="display:block; margin-top: 16px;">
+    {{ errorMsg }}
+  </ion-label>
+
+  <!-- Results -->
+  <ion-list *ngIf="!loading && recipes.length > 0" style="margin-top: 12px;">
+    <ion-item
+      *ngFor="let r of recipes"
+      [routerLink]="['/recipe-details', r.id]"
+      button
+    >
+      <ion-img
+        [src]="r.image"
+        alt="recipe image"
+        style="width: 64px; height: 64px; margin-right: 12px;"
+      ></ion-img>
+      <ion-label>{{ r.title }}</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

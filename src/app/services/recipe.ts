@@ -1,0 +1,39 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { RecipeSummary } from '../models/recipe.model';
+
+type ComplexSearchResponse = {
+  results: RecipeSummary[];
+  offset: number;
+  number: number;
+  totalResults: number;
+};
+
+@Injectable({
+  providedIn: 'root',
+})
+export class RecipeService {
+  private readonly baseUrl = environment.spoonacular.baseUrl;
+  private readonly apiKey = environment.spoonacular.apiKey;
+
+  constructor(private http: HttpClient) {}
+
+  /**
+   * Calls Spoonacular "Search Recipes Complex"
+   * Brief requires only: query + apiKey
+   * Returns only: id, title, image
+   */
+  searchRecipes(query: string): Observable<RecipeSummary[]> {
+    const url = `${this.baseUrl}/recipes/complexSearch`;
+
+    const params = new HttpParams()
+      .set('query', query.trim())
+      .set('apiKey', this.apiKey);
+
+    return this.http.get<ComplexSearchResponse>(url, { params }).pipe(
+      map((res) => res.results ?? [])
+    );
+  }
+}
