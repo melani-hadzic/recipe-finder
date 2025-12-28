@@ -5,8 +5,12 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
+  IonCard,
+  IonCardContent,
   IonContent,
   IonButton,
+  IonButtons,
+  IonIcon,
   IonInput,
   IonItem,
   IonList,
@@ -39,6 +43,10 @@ import { RecipeSummary } from '../models/recipe.model';
     IonLabel,
     IonSpinner,
     IonImg,
+    IonCard,
+    IonCardContent,
+    IonButtons,
+    IonIcon
   ],
 })
 export class HomePage {

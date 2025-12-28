@@ -4,6 +4,8 @@ export interface RecipeSummary {
   image: string;
 }
 
+
+// Represents one recipe; contains only fields that we need
 export interface RecipeDetails {
   id: number;
   title: string;

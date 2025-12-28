@@ -1,6 +1,16 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Recipe Finder</ion-title>
+    <ion-title>G00438804</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button routerLink="/favourites">
+        <ion-icon name="heart"></ion-icon>
+      </ion-button>
+
+      <ion-button routerLink="/settings">
+        <ion-icon name="settings"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -36,19 +46,21 @@
     {{ errorMsg }}
   </ion-label>
 
-  <!-- Results -->
-  <ion-list *ngIf="!loading && recipes.length > 0" style="margin-top: 12px;">
-    <ion-item
-      *ngFor="let r of recipes"
-      [routerLink]="['/recipe-details', r.id]"
-      button
-    >
-      <ion-img
-        [src]="r.image"
-        alt="recipe image"
-        style="width: 64px; height: 64px; margin-right: 12px;"
-      ></ion-img>
+ <!-- Results -->
+<div *ngIf="!loading && recipes.length > 0" style="margin-top: 12px;">
+  <ion-card *ngFor="let r of recipes">
+    <img [src]="r.image" alt="recipe image" />
+
+    <ion-card-content>
       <ion-label>{{ r.title }}</ion-label>
-    </ion-item>
-  </ion-list>
+    </ion-card-content>
+
+    <ion-card-content>
+      <ion-button [routerLink]="['/recipe-details', r.id]">
+        DETAILS
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</div>
+
 </ion-content>
