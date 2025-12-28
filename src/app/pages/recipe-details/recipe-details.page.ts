@@ -12,6 +12,10 @@ import {
 
 import { RecipeService } from '../../services/recipe';
 import { RecipeDetails } from '../../models/recipe.model';
+import { IonButton } from '@ionic/angular/standalone';
+import { FavouritesService } from '../../services/favourites';
+import { RecipeSummary } from '../../models/recipe.model';
+
 
 @Component({
   selector: 'app-recipe-details',
@@ -25,18 +29,23 @@ import { RecipeDetails } from '../../models/recipe.model';
     IonTitle,
     IonToolbar,
     IonText,
-    IonSpinner
+    IonSpinner,
+    IonButton
   ],
 })
+
 export class RecipeDetailsPage implements OnInit {
   recipe?: RecipeDetails;
   loading = true;
   errorMsg = '';
+  isFav = false;
 
   constructor(
-    private route: ActivatedRoute,
-    private recipeService: RecipeService
-  ) {}
+  private route: ActivatedRoute,
+  private recipeService: RecipeService,
+  private favouritesService: FavouritesService
+) {}
+
 
   ngOnInit() {
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -49,8 +58,10 @@ export class RecipeDetailsPage implements OnInit {
     }
 
     this.recipeService.getRecipeDetails(id).subscribe({
-      next: (data) => {
+      next: async (data) => {
         this.recipe = data;
+        await this.favouritesService.load();
+        this.isFav = this.favouritesService.isFavourite(this.recipe.id);
         this.loading = false;
       },
       error: () => {
@@ -59,5 +70,19 @@ export class RecipeDetailsPage implements OnInit {
       },
     });
   }
+
+  async toggleFavourite() {
+    if (!this.recipe) return;
+
+    const summary: RecipeSummary = {
+      id: this.recipe.id,
+      title: this.recipe.title,
+      image: this.recipe.image
+    };
+
+    await this.favouritesService.toggle(summary);
+    this.isFav = this.favouritesService.isFavourite(this.recipe.id);
+  }
+  
 }
 

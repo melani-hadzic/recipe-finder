@@ -5,9 +5,38 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">favourites</ion-title>
-    </ion-toolbar>
-  </ion-header>
+
+  <ng-container *ngIf="favourites$ | async as favs">
+
+    <ion-list *ngIf="favs.length > 0; else emptyState">
+      <ion-item
+        *ngFor="let r of favs"
+        [routerLink]="['/recipe-details', r.id]"
+      >
+        <ion-thumbnail slot="start">
+          <img [src]="r.image" [alt]="r.title" />
+        </ion-thumbnail>
+
+        <ion-label>
+          <h2>{{ r.title }}</h2>
+        </ion-label>
+
+        <ion-button
+          fill="clear"
+          slot="end"
+          (click)="$event.stopPropagation(); remove(r.id)"
+        >
+          Remove
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <ng-template #emptyState>
+      <ion-text class="ion-padding">
+        No favourites yet.
+      </ion-text>
+    </ng-template>
+
+  </ng-container>
+
 </ion-content>

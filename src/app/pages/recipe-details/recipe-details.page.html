@@ -14,6 +14,14 @@
   <ng-container *ngIf="!loading && recipe">
     <h2>{{ recipe.title }}</h2>
 
+    <ion-button
+      expand="block"
+      (click)="toggleFavourite()"
+      [disabled]="loading || !!errorMsg"
+    >
+      {{ isFav ? 'Remove from Favourites' : 'Add to Favourites' }}
+    </ion-button>
+
     <img
       *ngIf="recipe.image"
       [src]="recipe.image"

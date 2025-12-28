@@ -1,20 +1,39 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonThumbnail, IonButton, IonText } from '@ionic/angular/standalone';
+
+import { Observable } from 'rxjs';
+import { RouterModule } from '@angular/router';
+
+import { FavouritesService } from '../../services/favourites';
+import { RecipeSummary } from '../../models/recipe.model';
 
 @Component({
   selector: 'app-favourites',
   templateUrl: './favourites.page.html',
   styleUrls: ['./favourites.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [
+    IonContent, IonHeader, IonTitle, IonToolbar,
+    IonList, IonItem, IonLabel, IonThumbnail, IonButton, IonText,
+    CommonModule, RouterModule
+  ]
 })
 export class FavouritesPage implements OnInit {
 
-  constructor() { }
+  favourites$: Observable<RecipeSummary[]> = this.favouritesService.favourites$;
 
-  ngOnInit() {
+  constructor(private favouritesService: FavouritesService) {}
+
+  async ngOnInit() {
+    await this.favouritesService.load();
   }
 
+  async ionViewWillEnter() {
+    await this.favouritesService.load();
+  }
+
+  async remove(id: number) {
+    await this.favouritesService.remove(id);
+  }
 }
