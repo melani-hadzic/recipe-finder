@@ -1,20 +1,53 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonRadioGroup,
+  IonRadio
+} from '@ionic/angular/standalone';
+import { SettingsService, Measurement } from '../../services/settings';
+
+
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonRadioGroup,
+  IonRadio,
+  CommonModule,
+  FormsModule,
+]
 })
+
 export class SettingsPage implements OnInit {
+  measurement: Measurement = 'metric';
 
-  constructor() { }
+  constructor(private settings: SettingsService) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.measurement = await this.settings.getMeasurement();
   }
 
+  async onMeasurementChange(value: Measurement) {
+    this.measurement = value;
+    await this.settings.setMeasurement(value);
+  }
 }
+

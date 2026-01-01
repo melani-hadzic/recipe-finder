@@ -16,8 +16,16 @@ export interface RecipeDetails {
   summary?: string;
 
   extendedIngredients?: Array<{
-    id: number;
-    original: string;
+    id?: number;
+    name: string;
+    nameClean?: string;
+    original?: string;
+    amount?: number;
+    unit?: string;
+    measures?: {
+      metric?: { amount: number; unitShort: string; unitLong: string };
+      us?: { amount: number; unitShort: string; unitLong: string };
+    };
   }>;
 
   instructions?: string;

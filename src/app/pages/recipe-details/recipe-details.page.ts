@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -15,6 +15,8 @@ import { RecipeDetails } from '../../models/recipe.model';
 import { IonButton } from '@ionic/angular/standalone';
 import { FavouritesService } from '../../services/favourites';
 import { RecipeSummary } from '../../models/recipe.model';
+import { SettingsService, Measurement } from '../../services/settings';
+
 
 
 @Component({
@@ -34,20 +36,33 @@ import { RecipeSummary } from '../../models/recipe.model';
   ],
 })
 
-export class RecipeDetailsPage implements OnInit {
+export class RecipeDetailsPage {
   recipe?: RecipeDetails;
   loading = true;
   errorMsg = '';
   isFav = false;
 
   constructor(
-  private route: ActivatedRoute,
-  private recipeService: RecipeService,
-  private favouritesService: FavouritesService
-) {}
+    private route: ActivatedRoute,
+    private recipeService: RecipeService,
+    private favouritesService: FavouritesService,
+    private settings: SettingsService
+  ) { }
 
 
-  ngOnInit() {
+  units: Measurement = 'metric';
+
+  private async loadUnits() {
+    this.units = await this.settings.getMeasurement();
+  }
+
+
+
+
+  async ionViewWillEnter() {
+    await this.loadUnits();
+
+
     const idParam = this.route.snapshot.paramMap.get('id');
     const id = Number(idParam);
 
@@ -83,6 +98,23 @@ export class RecipeDetailsPage implements OnInit {
     await this.favouritesService.toggle(summary);
     this.isFav = this.favouritesService.isFavourite(this.recipe.id);
   }
-  
+
+  formatIngredientMeasure(ing: any): string {
+    const measure = ing?.measures?.[this.units];
+
+    const amount = measure?.amount ?? ing?.amount;
+    const unit = measure?.unitShort ?? ing?.unit ?? '';
+
+    if (amount == null) return ing?.original || '';
+
+    return `${this.formatAmount(amount)} ${unit}`.trim();
+  }
+
+  private formatAmount(n: number): string {
+    return Number.isInteger(n) ? String(n) : n.toFixed(1);
+  }
+
+
+
 }
 
