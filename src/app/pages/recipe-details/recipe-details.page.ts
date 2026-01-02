@@ -7,16 +7,13 @@ import {
   IonTitle,
   IonToolbar,
   IonText,
-  IonSpinner
+  IonSpinner,
+  IonButton
 } from '@ionic/angular/standalone';
-
 import { RecipeService } from '../../services/recipe';
-import { RecipeDetails } from '../../models/recipe.model';
-import { IonButton } from '@ionic/angular/standalone';
+import { RecipeDetails, RecipeSummary } from '../../models/recipe.model';
 import { FavouritesService } from '../../services/favourites';
-import { RecipeSummary } from '../../models/recipe.model';
 import { SettingsService, Measurement } from '../../services/settings';
-
 
 
 @Component({
@@ -42,6 +39,9 @@ export class RecipeDetailsPage {
   errorMsg = '';
   isFav = false;
 
+  // User's preferred units
+  units: Measurement = 'metric';
+
   constructor(
     private route: ActivatedRoute,
     private recipeService: RecipeService,
@@ -49,23 +49,19 @@ export class RecipeDetailsPage {
     private settings: SettingsService
   ) { }
 
-
-  units: Measurement = 'metric';
-
-  private async loadUnits() {
+  // Load the measurement unit 
+  private async loadUnits(): Promise<void> {
     this.units = await this.settings.getMeasurement();
   }
 
-
-
-
-  async ionViewWillEnter() {
+  // Loads units, reads the route id, then fetches details
+  async ionViewWillEnter(): Promise<void> {
     await this.loadUnits();
-
 
     const idParam = this.route.snapshot.paramMap.get('id');
     const id = Number(idParam);
 
+    // Validation in case the route is missing / invalid
     if (!idParam || Number.isNaN(id)) {
       this.errorMsg = 'Invalid recipe id.';
       this.loading = false;
@@ -75,8 +71,11 @@ export class RecipeDetailsPage {
     this.recipeService.getRecipeDetails(id).subscribe({
       next: async (data) => {
         this.recipe = data;
+
+        // Load favourites from storage
         await this.favouritesService.load();
         this.isFav = this.favouritesService.isFavourite(this.recipe.id);
+
         this.loading = false;
       },
       error: () => {
@@ -86,7 +85,8 @@ export class RecipeDetailsPage {
     });
   }
 
-  async toggleFavourite() {
+  // Add / remove current recipe from favourites
+  async toggleFavourite(): Promise<void> {
     if (!this.recipe) return;
 
     const summary: RecipeSummary = {
@@ -99,6 +99,7 @@ export class RecipeDetailsPage {
     this.isFav = this.favouritesService.isFavourite(this.recipe.id);
   }
 
+  // Uses metric / us measure if available, otherwise falls back to original values
   formatIngredientMeasure(ing: any): string {
     const measure = ing?.measures?.[this.units];
 
@@ -110,11 +111,8 @@ export class RecipeDetailsPage {
     return `${this.formatAmount(amount)} ${unit}`.trim();
   }
 
+  // Keep numbers simple 
   private formatAmount(n: number): string {
     return Number.isInteger(n) ? String(n) : n.toFixed(1);
   }
-
-
-
 }
-

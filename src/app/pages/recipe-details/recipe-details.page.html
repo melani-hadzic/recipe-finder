@@ -5,12 +5,15 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <!-- Loading indicator -->
   <ion-spinner *ngIf="loading"></ion-spinner>
 
+  <!-- Error message -->
   <ion-text color="danger" *ngIf="!loading && errorMsg">
     <p>{{ errorMsg }}</p>
   </ion-text>
 
+  <!-- Recipe content -->
   <ng-container *ngIf="!loading && recipe">
     <h2>{{ recipe.title }}</h2>
 
@@ -18,7 +21,7 @@
       {{ isFav ? 'Remove from Favourites' : 'Add to Favourites' }}
     </ion-button>
 
-    <img *ngIf="recipe.image" [src]="recipe.image" [alt]="recipe.title" style="width: 100%; border-radius: 12px;" />
+    <img *ngIf="recipe.image" [src]="recipe.image" [alt]="recipe.title" style="width: 100%;" />
 
     <h3 *ngIf="recipe.extendedIngredients?.length">Ingredients</h3>
     <ul *ngIf="recipe.extendedIngredients?.length">
@@ -26,7 +29,6 @@
         {{ formatIngredientMeasure(ing) }} {{ ing.nameClean || ing.name }}
       </li>
     </ul>
-
 
     <h3 *ngIf="recipe.instructions">Instructions</h3>
     <div *ngIf="recipe.instructions" [innerHTML]="recipe.instructions"></div>

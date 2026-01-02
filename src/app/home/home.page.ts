@@ -19,7 +19,6 @@ import {
   IonImg,
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
-
 import { RecipeService } from '../services/recipe';
 import { RecipeSummary } from '../models/recipe.model';
 
@@ -49,17 +48,20 @@ import { RecipeSummary } from '../models/recipe.model';
     IonIcon
   ],
 })
+
 export class HomePage {
-  query = ''; // Stores whsst the user typed
-  recipes: RecipeSummary[] = []; // stores results from API
-  loading = false; // Shows spinner while waiting
-  errorMsg = ''; // shows message
+  query = '';
+  recipes: RecipeSummary[] = []; 
+  loading = false; 
+  errorMsg = ''; 
 
   constructor(private recipeService: RecipeService) {}
 
+  // Sends the query to the API and updates the UI with results
   onSearch(): void {
     const q = this.query.trim();
 
+    // Validation to prevent empty searches
     if (!q) {
       this.recipes = [];
       this.errorMsg = 'Please enter at least one ingredient.';
@@ -74,6 +76,7 @@ export class HomePage {
         this.recipes = results;
         this.loading = false;
 
+        // Show message if search returns no recipes
         if (results.length === 0) {
           this.errorMsg = 'No recipes found. Try a different search.';
         }

@@ -20,17 +20,14 @@ type ComplexSearchResponse = {
 export class RecipeService {
   private readonly baseUrl = environment.spoonacular.baseUrl;
   private readonly apiKey = environment.spoonacular.apiKey;
+
   constructor(
     private http: HttpClient,
     private settings: SettingsService
   ) { }
 
 
-  /**
-   * Calls Spoonacular "Search Recipes Complex"
-   * Brief requires only: query + apiKey
-   * Returns only: id, title, image
-   */
+  // Search recipes using Spoonacular
   searchRecipes(query: string): Observable<RecipeSummary[]> {
     const url = `${this.baseUrl}/recipes/complexSearch`;
 
@@ -43,6 +40,7 @@ export class RecipeService {
     );
   }
 
+  // Get full recipe details for the details page
   getRecipeDetails(id: number): Observable<RecipeDetails> {
     return new Observable<RecipeDetails>((observer) => {
       this.settings.getMeasurement().then((measurement) => {
@@ -61,7 +59,4 @@ export class RecipeService {
       });
     });
   }
-
-
-
 }
